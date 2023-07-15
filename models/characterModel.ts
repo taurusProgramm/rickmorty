@@ -17,7 +17,6 @@ export default interface ICharacter {
     },
     image: string,
     episode: string[],
-    episodeObj: IEpisode[] | null,
     url: string,
     created: string
 }

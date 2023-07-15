@@ -2,13 +2,17 @@
     <div class="wrapper">
         <div v-for="(character, i) in characters" :key="character.id">
             <TheCharacterCard 
-            :name="character.name"
-            :species="character.species"
-            :img-url="character.image"
+            :character="character"
             :episodes="episodes[i]"
             />
         </div>
         <div ref="observer" class="observer"></div>
+        <div class="up"
+        :style="{
+            'opacity': isSeenUpArrow ? 1 : 0
+        }"
+        @click="scrollToTop"
+        ></div>
     </div>
 </template>
 
@@ -21,6 +25,7 @@
     const episodes = ref<IEpisode[][]>([])
     const page = ref(1)
     const observer = ref()
+    const isSeenUpArrow = ref(false)
     
     const urlCharacters = `https://rickandmortyapi.com/api/character?page=`
 
@@ -44,6 +49,21 @@
             let requests = character.episode.map(item => $fetch(item))
             let responses = await Promise.all(requests) as IEpisode[]
             episodes.value = [...episodes.value, responses]
+        }
+    }
+
+    if(process.client){
+        window.onscroll = ()=>{
+           isSeenUpArrow.value = window.scrollY < 80 ? false : true
+        }
+    }
+
+    const scrollToTop = () => {
+        if(process.client){
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            })
         }
     }
 
@@ -71,6 +91,17 @@
             height: 30px;
             width: auto;
             background-color: transparent;
+        }
+        .up{
+            position: fixed;
+            bottom: 50px;
+            right: 50px;
+            height: 60px;
+            width: 60px;
+            border-radius: 50%;
+            background-color: aqua;
+            cursor: pointer;
+            opacity: 0;
         }
     }
 </style>

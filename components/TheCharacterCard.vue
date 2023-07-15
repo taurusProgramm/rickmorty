@@ -1,26 +1,36 @@
 <template>
     <div class="card">
         <div class="img"
+        @click="$router.push(`/character/${character?.id}`)"
         :style="{
-            'background-image': `url(${ imgUrl })`,
+            'background-image': `url(${ character?.image })`,
         }"
         ></div>
         <div class="info">
-            <div class="name"> <h1>{{ name }}</h1> </div>
-            <div class="species"> <h3>{{ species }}</h3> </div>
+            <div class="name"> 
+                <NuxtLink :to="`/character/${character?.id}`">
+                    <h1>{{ character?.name }}</h1>
+                </NuxtLink> 
+            </div>
+            <div class="species"> <h3>{{ character?.species }}</h3> </div>
             <div class="episode"> Episodes: 
-                <span v-for="episode in episodes" :key="episode.id"> {{ episode.id }}. {{ episode.name }}</span>    
+                <span v-for="episode in episodes" :key="episode.id"> 
+                    <NuxtLink :to="`/episode/${episode.id}`">
+                        {{ episode.id }}. {{ episode.name }}
+                    </NuxtLink>
+                </span>    
             </div>
         </div>
     </div>
 </template>
 
-<script setup >
-const props = defineProps({
-    name: String,
-    species: String,
-    imgUrl: String,
-    episodes: Array
+<script setup lang="ts">
+import IEpisode from '@/models/episodeModel'
+import ICharacter from '@/models/characterModel'
+
+defineProps({
+    character: Object as () => ICharacter,
+    episodes: Array<IEpisode>
 })
 </script>
 
@@ -38,7 +48,7 @@ const props = defineProps({
         height: 150px;
         width: 150px;
         border-radius: 50%;
-        background-color: antiquewhite;
+        background-color: #f3f4f6;
         cursor: pointer;
         background-size: cover;
         background-repeat: no-repeat;
